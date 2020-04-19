@@ -1,46 +1,23 @@
-import { Observer, Observable, Subject, Subscription } from 'rxjs';
-const observer: Observer<any> = {
-    next: value => console.log('next:',value),
-    error: error => console.error('error:',error),
-    complete: () => console.log('completado')
-  }    
+import { Observer, range, fromEvent } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-// Ejemplo de subject para compartir consumir datos comunes en distintas suscripciones
+const observer: Observer<number|string> = {
+    next: value => console.log(value),
+    error: error => console.error(error),
+    complete: () => console.log('Completado')
+}
 
-const random$: Observable<number> = new Observable<number>( subs => {
-    const interval = setInterval( ()=> {
-        subs.next(Math.random());
-        console.log('Emito y sigo emitiendo');
-    }, 3000);
+//Operador MAP: Modifica el flujo inicial del observable, se le puede mapear el valor que recibe y el que devolverá
+//Al ser una función de flecha si fuese necesario añadir llaves seria necesario añadir el "return" para que devuelva "algo"
 
-    return () => {
-        clearInterval(interval);
-        console.log('Oh no, se me acaba el chollo!!');
-    }
-});
+const range$ = range(1,5).pipe(map<number,number>( val => val * 5));
 
-// Propiedades de subject:
-// 1. Broadcast multiple: permite compartir los mismos datos de un observable de forma multiple 
-//    para distintas subscripciones
-// 2. Es un observer
-// 3. Implementa next, subscribe y complete
+range$.subscribe( observer );
 
-const subject$ : Subject<number> = new Subject<number>();
-const subscription: Subscription = random$.subscribe(subject$);
+//Emitimos el evento de pulsar una tecla (El evento se lanza al levantar el dedo de la tecla) y 
+//modificamos el resultado 
+const keyup$ = fromEvent<KeyboardEvent>( document, 'keyup').pipe(
+    map<KeyboardEvent, string>( event => event.code )
+);
 
-subject$.subscribe( observer); //Utilizamos el observer que hemos implementado
-
-subject$.subscribe( observer ); // idem
-
-setTimeout( () => {
-    subject$.next(1091); //Usando el metodo next del subject intercedemos en el valor emitido por el observable al cual esta suscrito el subject y emitimos un valor "extra"
-    subject$.complete(); //Completamos el subject pero no el observable al cual esta suscrito
-}, 7500);
-
-//Cuando completamos el subject vemos que el observable padre no se ha completado al ejecutar el complete del subject,
-//y se sigue produciendo fuga de memoria puesto que sigue emitiendo, para ello tendremos que eliminar la subscripcion 
-//generada en la linea 29 random$.subscribe(subject$);
-/* setTimeout( () => {
-    subscription.unsubscribe();
-}, 10000); */
-
+keyup$.subscribe( observer );
