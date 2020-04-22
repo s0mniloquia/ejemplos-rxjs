@@ -22,9 +22,8 @@ interface Personaje {
 };
 
 const personajes: Personaje[] = [{nombre:'He-Man', tipo:'bueno'},
-{nombre:'He-Man', tipo:'bueno'},
-
 {nombre:'Skeletor', tipo:'malisimo'},
+{nombre:'He-Man', tipo:'bueno'},
 {nombre:'Evil-lyn', tipo:'malisima'}]
 
 //Si es true no dejará pasar el valor y lo bloquea
