@@ -9,6 +9,11 @@ const observer = {
 
 //debounceTime: Operador de tiempo que devuelve el ultimo valor emitido una vez transcurridos los milisegundos
 //especificados por parametro, si se vuelve a emitir un nuevo valor el contador de tiempo se inicializa.
+//Ej. debounceTime(2000)
+//interval$ ---a----------b-c------------------->
+//             2 seg.->   X 2 seg.->  Cuando emitimos b se empiezan a contar los 2 segundos pero se cancelan porque emitimos rapidamente c y vuelve a empezar el contador 
+//          ----------a------------c------------>
+
 const input = document.createElement('input');
 document.querySelector('body').append(input);
 

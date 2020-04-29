@@ -1,20 +1,24 @@
 import { fromEvent } from 'rxjs';
-import { debounceTime, pluck, distinctUntilChanged } from 'rxjs/internal/operators';
-import { map, tap } from 'rxjs/operators';
+import { pluck, distinctUntilChanged } from 'rxjs/internal/operators';
+import { throttleTime } from 'rxjs/operators';
 
 const observer = {
     next: value => console.log(`[next]:${value}`),
     complete: () => console.log('Complete')
 }
 
-//debounceTime: Operador de tiempo que devuelve el ultimo valor emitido una vez transcurridos los milisegundos
-//especificados por parametro, si se vuelve a emitir un nuevo valor el contador de tiempo se inicializa.
+//throttleTime: Operador de tiempo que devuelve un valor emitido y no vuelve a escuchar valores pasado el tiempo indicado, los valores emitidos
+//durante es periodo de tiempo se pierden. Es posible emitir el ultimo y el primer valor del intervalo
+//Ej. throttleTime(2000)
+//interval$ ---a--b-c------d--e-------f------------>
+// salida   ---a-----------d----------f-->
+//             2seg.-->|   2seg.-->|  2seg.-->|
 const input = document.createElement('input');
 document.querySelector('body').append(input);
 
 
 const input$ = fromEvent<KeyboardEvent>( input, 'keyup').pipe(
-    debounceTime(1000),
+    throttleTime(1000),
     pluck('target','value'),
     distinctUntilChanged() //A este operador le afecta lo que le devuelve el operador anterior, es decir, debounceTime sirve de filtro
                            //ya que al no dejar pasar segun que valores el distincUntilChanged solamente actua sobre los valores que le llegan
