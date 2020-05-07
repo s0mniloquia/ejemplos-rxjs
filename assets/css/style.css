@@ -7,11 +7,12 @@
 
 body{
     text-align: center !important;
-    background-color: #18202F;
+    background-color: #2f1818;
 }
 
 h1 {
     font-weight: lighter;
+    
 }
 
 input, button {
