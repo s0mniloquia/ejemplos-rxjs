@@ -28,7 +28,7 @@ document.querySelector('body').append(input);
 
 const input$ = fromEvent<KeyboardEvent>( input, 'keyup').pipe(
     pluck('target','value'),
-    mergeMap( texto => ajax(`${url_users}${texto}`))
+    switchMap( texto => ajax(`${url_users}${texto}`))
     ).subscribe(res=>{
         console.log(res); //Imprimiría el resultado del observable hijo que ha podido completar su petición
     })
